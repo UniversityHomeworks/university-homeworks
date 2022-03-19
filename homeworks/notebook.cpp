@@ -20,19 +20,15 @@ void search_data(struct node **);
 void remove_data(struct node **);
 void print_list(struct node *);
 
-
-
 void insert(struct node **data) {
-    struct node *q;
-    q = *data;
-
+    struct node *q = *data;
     int id;
     char name[30];
     char telephone[13];
     char email[40];
 
     cout << "    1. Digite su identificacion:\t";
-    scanf(" %d", &id);
+    cin >> id;
     fflush(stdin);
     cout << "    2. Digite su nombre completo:\t";
     scanf(" %[^\n]", &name);
@@ -57,6 +53,18 @@ void insert(struct node **data) {
         return;
     }
 
+    while (q -> next != NULL) {
+        q = q -> next;
+    }
+
+    q -> next = locate;
+    q -> next -> next = NULL;
+    q -> next -> preview = q;
+    q -> id = id;
+    strcpy(q -> name, name);
+    strcpy(q -> telephone, telephone);
+    strcpy(q -> email, email);
+    *data = q;
     print_list(*data);
 
 }
@@ -70,12 +78,13 @@ void remove_data(struct node **data) {
 }
 
 void print_list (struct node *data) {
-    printf ("La lista es:\n");
+    cout << "LOS DATOS EN LA AGENDA SON:\n";
 	while (data != NULL) {
-        cout << "CEDULA: " << data -> id;
-        printf("NOMBRE COMPLETO: %s\n", data -> name);
-        printf("TELEFONO: %s\n", data -> telephone);
-        printf("CORREO ELECTRONICO: %s\n", data -> email);
+        cout << "|*|--------------------[*]--------------------|*|\n";
+        cout << "* CEDULA: " << data -> id << "\n";
+        cout << "* NOMBRE COMPLETO: " << data -> name << "\n";
+        cout << "* TELEFONO: " << data -> telephone << "\n";
+        cout << "* CORREO ELECTRONICO: " << data -> email << "\n";
 		data = data -> next;
 	} 
 }
@@ -86,15 +95,15 @@ int main() {
     int opc = 0;
     
     while (opc != 4) {
-        printf("MENU SELECTIVO PARA INSERTAR DATOS EN AGENDA\n");
-        printf("\n");
-        printf("1. INSERTAR DATOS\n");
-        printf("2. BUSCAR Y ELIMINAR\n");
-        printf("3. BUSCAR\n");
-        printf("4. SALIR\n");
-        printf("\n");
-        printf("SELECCIONA UNA OPCION:\t");
-        scanf("%d", &opc);
+        cout << "MENU SELECTIVO PARA INSERTAR DATOS EN AGENDA\n" 
+             << "\n"
+             << "1. INSERTAR DATOS\n"
+             << "2. BUSCAR Y ELIMINAR\n"
+             << "3. BUSCAR\n"
+             << "4. SALIR\n"
+             << "\n"
+             << "SELECCIONA UNA OPCION:\t";
+        cin >> opc;
 
         switch(opc) {
             case 1:
@@ -107,7 +116,7 @@ int main() {
             case 4:
                 continue;
             default:
-                printf("DATO INCORRECTO, INGRESE UN DATO ADECUADO");
+                cout << "DATO INCORRECTO, INGRESE UN DATO ADECUADO\n"; 
                 break;
         }
         fflush(stdin);
