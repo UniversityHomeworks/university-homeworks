@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-#define locate (struct node *) malloc(sizeof(struct node *))
+#define locate (struct node *) malloc(sizeof(struct node))
 
 struct node {
     struct node *preview;
@@ -21,7 +21,7 @@ void remove_data(struct node **);
 void print_list(struct node *);
 
 void insert(struct node **data) {
-    struct node *q = *data;
+    struct node *q;
     int id;
     char name[30];
     char telephone[13];
@@ -31,16 +31,18 @@ void insert(struct node **data) {
     cin >> id;
     fflush(stdin);
     cout << "    2. Digite su nombre completo:\t";
-    scanf(" %[^\n]", &name);
+    scanf(" %[^\n]", name);
     fflush(stdin);
     cout << "    3. Digite su numero telefonico:\t";
-    scanf(" %[^\n]", &telephone);
+    scanf(" %[^\n]", telephone);
     fflush(stdin);
     cout << "    4. Digite su correo electronico:\t";
-    scanf(" %[^\n]", &email);
+    scanf(" %[^\n]", email);
     fflush(stdin);
 
+    q =  *data;
     if (*data == NULL) {
+        cout << "[debug]: dato es nulo\t";
         q = locate;
         q -> preview = NULL;
         q -> next = NULL;
@@ -57,6 +59,7 @@ void insert(struct node **data) {
         q = q -> next;
     }
 
+    cout << "[debug]: dato no es nulo\t";
     q -> next = locate;
     q -> next -> next = NULL;
     q -> next -> preview = q;
@@ -69,15 +72,53 @@ void insert(struct node **data) {
 
 }
 
-void search_data(struct node **data) {
+void search_data(struct node **data, int value) {
+    struct node *q;
+    q = *data;
 
+    if (q == NULL) {
+        cout << "[!] NO HAY DATOS QUE BUSCAR EN LA LISTA [!]\n";
+        return;
+    }
+
+    while (q -> next != NULL) {
+        if (q -> id == value) {
+            cout << "SE ENCONTRÓ EL NUMERO: " << value << "\n";
+            return;
+        }
+        q = q -> next;
+    }
+
+    if (q -> id == value) {
+        cout << "SE ENCONTRÓ EL NUMERO: " << value << "\n";
+        return;
+    }
+    cout << "TAL NUMERO NO SE UBICA EN LA LISTA\n";
 }
 
 void remove_data(struct node **data) {
 
+    struct node *q;
+	
+	if(*data == NULL) {
+		cout << "[*] LISTA VACIA [*]\n";
+        print_list(*data);
+        return;
+	}
+    q = *data;
+    if(q -> next == NULL) {
+		cout << "\nLOS DATOS FUERON ELIMINADOS\n";
+		*data = NULL;
+	} else {
+		cout << "\nLOS DATOS FUERON ELIMINADOS\n";
+		*data = q -> next;
+		free(q);
+	}	
+	print_list(*data);
+
 }
 
-void print_list (struct node *data) {
+void print_list(struct node *data) {
     cout << "LOS DATOS EN LA AGENDA SON:\n";
 	while (data != NULL) {
         cout << "|*|--------------------[*]--------------------|*|\n";
@@ -107,11 +148,22 @@ int main() {
 
         switch(opc) {
             case 1:
+                cout << "INSERTAR DATOS\n";
                 insert(&cab);
                 break;
             case 2:
+                cout << "BUSCAR & ELIMINAR\n";
+                int n;
+                cout << "INGRESE EL DATO A ELIMINAR:\t";
+                cin >> n;
+                remove_data(&cab);
                 break;
             case 3:
+                cout << "BUSCAR\n";
+                int b;
+                cout << "INGRESE EL DATO A BUSCAR:\t";
+                cin >> b;
+                search_data(&cab, b);
                 break;
             case 4:
                 continue;
