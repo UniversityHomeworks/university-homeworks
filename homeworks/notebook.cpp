@@ -7,7 +7,7 @@ using namespace std;
 #define locate (struct node *) malloc(sizeof(struct node))
 
 struct node {
-    struct node *preview;
+    struct node *pre;
     int id;
     char name[30];
     char telephone[13];
@@ -42,9 +42,8 @@ void insert(struct node **data) {
 
     q =  *data;
     if (*data == NULL) {
-        cout << "[debug]: dato es nulo\t";
         q = locate;
-        q -> preview = NULL;
+        q -> pre = NULL;
         q -> next = NULL;
         q -> id = id;
         strcpy(q -> name, name);
@@ -55,19 +54,16 @@ void insert(struct node **data) {
         return;
     }
 
-    while (q -> next != NULL) {
-        q = q -> next;
-    }
-
-    cout << "[debug]: dato no es nulo\t";
-    q -> next = locate;
-    q -> next -> next = NULL;
-    q -> next -> preview = q;
-    q -> id = id;
-    strcpy(q -> name, name);
-    strcpy(q -> telephone, telephone);
-    strcpy(q -> email, email);
-    *data = q;
+    struct node *t;
+    t = locate;
+    t -> next = NULL;
+    t -> pre = q;
+    t -> id = id;
+    strcpy(t -> name, name);
+    strcpy(t -> telephone, telephone);
+    strcpy(t -> email, email);
+    q -> next = t;
+    *data = t;
     print_list(*data);
 
 }
@@ -77,27 +73,27 @@ void search_data(struct node **data, int value) {
     q = *data;
 
     if (q == NULL) {
-        cout << "[!] NO HAY DATOS QUE BUSCAR EN LA LISTA [!]\n";
+        cout << "[!] NO HAY DATOS QUE BUSCAR EN LA AGENDA [!]\n";
         return;
     }
 
-    while (q -> next != NULL) {
+    while (q -> pre != NULL) {
         if (q -> id == value) {
-            cout << "SE ENCONTRÓ EL NUMERO: " << value << "\n";
+            cout << "SE ENCONTRÓ LA CEDULA: " << value << "\n";
             return;
         }
-        q = q -> next;
+        q = q -> pre;
     }
 
     if (q -> id == value) {
-        cout << "SE ENCONTRÓ EL NUMERO: " << value << "\n";
+        cout << "SE ENCONTRÓ LA CEDULA: " << value << "\n";
         return;
     }
-    cout << "TAL NUMERO NO SE UBICA EN LA LISTA\n";
+    cout << "TAL NUMERO NO SE UBICA EN LA AGENDA\n";
 }
 
-void remove_data(struct node **data) {
-
+void remove_data(struct node **data, int value) {
+    
     struct node *q;
 	
 	if(*data == NULL) {
@@ -105,28 +101,47 @@ void remove_data(struct node **data) {
         print_list(*data);
         return;
 	}
+
     q = *data;
-    if(q -> next == NULL) {
-		cout << "\nLOS DATOS FUERON ELIMINADOS\n";
+
+    while (q -> pre != NULL) {
+        if (q -> id == value) {
+            cout << "SE ENCONTRÓ LA CEDULA: " << value << " PARA SU ELIMINACION\n";
+            break;
+        }
+        q = q -> pre;
+    }
+
+    if(q -> pre == NULL && q -> next == NULL) {
+		cout << "\nLA AGENDA TIENE UN SOLO DATO, SE ELIMINA ESE DATO\n";
 		*data = NULL;
 	} else {
 		cout << "\nLOS DATOS FUERON ELIMINADOS\n";
-		*data = q -> next;
+        struct node *next_node = q -> next;
+        struct node *previous_node = q -> pre;
+
+        next_node -> pre = previous_node;
+        previous_node -> next = next_node; 
+		*data = previous_node -> next;
 		free(q);
 	}	
 	print_list(*data);
-
 }
 
 void print_list(struct node *data) {
+    if (data == NULL) {
+        cout << "DE MOMENTO LA AGENDA ESTA VACIA, POR FAVOR INSERTE DATOS\n";
+        return;
+    }
     cout << "LOS DATOS EN LA AGENDA SON:\n";
+    int i = 1;
 	while (data != NULL) {
-        cout << "|*|--------------------[*]--------------------|*|\n";
+        cout << "|*|--------------------[#" << i++ << "]--------------------|*|\n";
         cout << "* CEDULA: " << data -> id << "\n";
         cout << "* NOMBRE COMPLETO: " << data -> name << "\n";
         cout << "* TELEFONO: " << data -> telephone << "\n";
         cout << "* CORREO ELECTRONICO: " << data -> email << "\n";
-		data = data -> next;
+		data = data -> pre;
 	} 
 }
 
@@ -139,8 +154,8 @@ int main() {
         cout << "MENU SELECTIVO PARA INSERTAR DATOS EN AGENDA\n" 
              << "\n"
              << "1. INSERTAR DATOS\n"
-             << "2. BUSCAR Y ELIMINAR\n"
-             << "3. BUSCAR\n"
+             << "2. BUSCAR\n"
+             << "3. BUSCAR Y ELIMINAR\n"
              << "4. SALIR\n"
              << "\n"
              << "SELECCIONA UNA OPCION:\t";
@@ -148,27 +163,27 @@ int main() {
 
         switch(opc) {
             case 1:
-                cout << "INSERTAR DATOS\n";
+                cout << "<< INSERTAR DATOS >>\n";
                 insert(&cab);
                 break;
             case 2:
-                cout << "BUSCAR & ELIMINAR\n";
+                cout << "<< BUSCAR >>\n";
                 int n;
-                cout << "INGRESE EL DATO A ELIMINAR:\t";
+                cout << "INGRESE LA CEDULA A BUSCAR:\t";
                 cin >> n;
-                remove_data(&cab);
+                search_data(&cab, n);
                 break;
             case 3:
-                cout << "BUSCAR\n";
+                cout << "<< BUSCAR & ELIMINAR >>\n";
                 int b;
-                cout << "INGRESE EL DATO A BUSCAR:\t";
+                cout << "INGRESE LA CEDULA A ELIMINAR:\t";
                 cin >> b;
-                search_data(&cab, b);
+                remove_data(&cab, b);
                 break;
             case 4:
                 continue;
             default:
-                cout << "DATO INCORRECTO, INGRESE UN DATO ADECUADO\n"; 
+                cout << "<< DATO INCORRECTO, INGRESE UNA OPCION ADECUADA >>\n"; 
                 break;
         }
         fflush(stdin);
