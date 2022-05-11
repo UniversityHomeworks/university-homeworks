@@ -24,8 +24,6 @@ public class MainMonticle {
         stringBuilder.append("* Vector ordenado: ").append('\n');
         stringBuilder.append(monticleToString(vector)).append('\n');
         informationPane(stringBuilder.toString());
-
-
     }
 
     private static void simpleOrder(int[] vector, int size) {

@@ -9,16 +9,16 @@ using namespace std;
 
 struct node {
     struct node *left;
-    int data;
+    char data;
     struct node *right;
 };
 
 void preorder_print(struct node *currentNode); 
 void inorder_print(struct node *currentNode);
 void posorder_print(struct node *currentNode);
-void insert(struct node *&currentNode, int number);
+void insert(struct node *&currentNode, char number);
 void simple_print(struct node *currentNode);
-void search_data(struct node *currentNode, int data);
+void search_data(struct node *currentNode, char data);
 
 void preorder_print(struct node *currentNode) {
     if (currentNode != NULL) {
@@ -49,7 +49,7 @@ void simple_print(struct node *currentNode) {
     cout << "El dato en la posicion " << " es: " << currentNode -> data << "\n";
 }
 
-void search_data(struct node *currentNode, int data) {
+void search_data(struct node *currentNode, char data) {
 
     if (currentNode == NULL) {
         cout << "DATO NO ENCONTRADO EN EL ARBOL\n";
@@ -78,7 +78,7 @@ int node_lenght(struct node *currentNode, int i) {
     return i;
 }
 
-void insert(struct node *&currentNode, int number) {
+void insert(struct node *&currentNode, char number) {
     struct node *viewNode;
 
     viewNode = currentNode;
@@ -114,7 +114,7 @@ int main() {
 
         switch (opc) {
             case 1:
-                int number;
+                char number;
                 cout << "Ingrese el dato que desee poner en el arbol:\t";
                 cin >> number;
                 insert(currentNode, number);
